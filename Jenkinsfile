@@ -6,9 +6,9 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
+    stage('Checkout SCM') {
       steps {
-        git url: 'https://github.com/Srilekya07/static-web-ci-cd.git'
+        checkout scm
       }
     }
 
