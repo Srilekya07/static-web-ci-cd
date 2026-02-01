@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     IMAGE_NAME = "srilekya/static-web-app"
+    IMAGE_TAG  = "v3"
   }
 
   stages {
