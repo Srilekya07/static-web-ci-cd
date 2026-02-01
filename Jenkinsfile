@@ -7,34 +7,44 @@ pipeline {
   }
 
   stages {
-    stage('Checkout SCM') {
-      steps {
-        checkout scm
-      }
-    }
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Srilekya07/static-web-ci-cd.git'
+            }
+        }
 
   
 
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t $IMAGE_NAME:latest .'
+        sh '''
+                docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                '''
       }
     }
 
-    stage('Push Docker Image') {
-      steps {
-        withCredentials([usernamePassword(
-          credentialsId: 'dockerhub-creds',
-          usernameVariable: 'USER',
-          passwordVariable: 'PASS'
-        )]) {
-          sh '''
-          echo $PASS | docker login -u $USER --password-stdin
-          docker push $IMAGE_NAME:latest
-          '''
+    stage('Login to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+                }
+            }
         }
-      }
-    }
-  }
-}
 
+        stage('Push Docker Image') {
+            steps {
+                sh '''
+                docker push $IMAGE_NAME:$IMAGE_TAG
+                '''
+            }
+        }
+    }
+}
