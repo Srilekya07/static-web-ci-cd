@@ -13,12 +13,18 @@ pipeline {
     }
 
     stage('SonarQube Scan') {
-      steps {
-        withSonarQubeEnv('sonarqube-server') {
-          sh 'sonar-scanner'
-        }
-      }
+  environment {
+    SCANNER_HOME = tool 'sonar-scanner'
+  }
+  steps {
+    withSonarQubeEnv('sonarqube-server') {
+      sh '''
+        $SCANNER_HOME/bin/sonar-scanner
+      '''
     }
+  }
+}
+
 
     stage('Build Docker Image') {
       steps {
