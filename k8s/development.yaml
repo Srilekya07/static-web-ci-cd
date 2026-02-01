@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: srilekya/static-web-app:v2
+        image: srilekya/static-web-app:v3
         ports:
         - containerPort: 80
